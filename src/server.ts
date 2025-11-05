@@ -1,10 +1,26 @@
-import express from "express";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
+import morgan from "morgan";
+import cors from "cors";
+
+import taskRouter from "./routes/task.routes.js";
+import type { AppError } from "./errors.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(cors());
+
+app.use("/tasks", taskRouter);
+
+app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
+  console.error(error.stack);
+  res.status(error.statusCode).send({ message: error.message });
 });
 
 app.listen(PORT, () => {
