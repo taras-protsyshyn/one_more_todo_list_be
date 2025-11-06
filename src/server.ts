@@ -5,12 +5,17 @@ import express, {
 } from "express";
 import morgan from "morgan";
 import cors from "cors";
+import dotenv from "dotenv";
 
 import taskRouter from "./routes/task.routes.js";
 import type { AppError } from "./errors.js";
 
+import "./config/db.js";
+
+dotenv.config();
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(morgan("dev"));
