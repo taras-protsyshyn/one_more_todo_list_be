@@ -3,6 +3,7 @@ import type {
   taskSchema,
   createTaskSchema,
   updateTaskSchema,
+  tasksFilterSchema,
 } from "../schemas/task.schemas.js";
 
 export enum Status {
@@ -17,11 +18,7 @@ export enum Priority {
   High = "high",
 }
 
-export type Filters = {
-  status?: Status;
-  priority?: Priority;
-  createdAt?: Date;
-};
+export type Filters = z.infer<typeof tasksFilterSchema>;
 
 export type TTask = z.infer<typeof taskSchema>;
 export type TCreateTask = z.infer<typeof createTaskSchema>;

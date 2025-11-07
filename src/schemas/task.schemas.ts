@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { Status, Priority } from "../types/task.types.js";
+import { parseDate } from "../utils/date.js";
 
 export const taskSchema = z.object({
   id: z.string(),
@@ -10,6 +11,7 @@ export const taskSchema = z.object({
   deadline: z.coerce.date(),
   status: z.enum(Status).default(Status.Todo).optional(),
   priority: z.enum(Priority).default(Priority.Low).optional(),
+  userId: z.number(),
 });
 
 export const createTaskSchema = taskSchema.omit({
@@ -26,5 +28,8 @@ export const updateTaskSchema = taskSchema.partial().omit({
 export const tasksFilterSchema = z.object({
   status: z.enum(Status).optional(),
   priority: z.enum(Priority).optional(),
-  createdAt: z.coerce.date().optional(),
+  createdAt: z
+    .string()
+    .transform((str) => parseDate(str))
+    .optional(),
 });

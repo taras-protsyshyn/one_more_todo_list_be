@@ -15,7 +15,10 @@ export const getTasks = async (
 
     res.send(tasks);
   } catch (error) {
-    nex(new AppError("Invalid query parameters", 400));
+    if (error instanceof Error) {
+      console.error(error);
+      nex(new AppError(error.message, 400));
+    }
   }
 };
 
@@ -35,6 +38,9 @@ export const getTaskById = async (
 
     res.send(task);
   } catch (error) {
+    if (error instanceof Error) {
+      return next(new AppError(error.message, 400));
+    }
     next(error);
   }
 };

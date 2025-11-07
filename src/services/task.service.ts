@@ -1,9 +1,7 @@
-import { isObjectEmpty } from "../utils/index.js";
+import { Op } from "sequelize";
+import { getEndOfDay, getStartOfDay, isObjectEmpty } from "../utils/index.js";
 import {
-  Priority,
-  Status,
   type Filters,
-  type TTask,
   type TCreateTask,
   type TUpdateTask,
 } from "../types/task.types.js";
@@ -12,12 +10,27 @@ import { Task } from "../models/task.model.js";
 export const getTasks = async (filters: Filters) => {
   if (isObjectEmpty(filters)) return Task.findAll();
 
+  const whereConditions: any = {};
+
+  if (filters.status) {
+    whereConditions.status = filters.status;
+  }
+
+  if (filters.priority) {
+    whereConditions.priority = filters.priority;
+  }
+
+  if (filters.createdAt) {
+    whereConditions.createdAt = {
+      [Op.between]: [
+        getStartOfDay(filters.createdAt),
+        getEndOfDay(filters.createdAt),
+      ],
+    };
+  }
+
   return Task.findAll({
-    where: {
-      ...(filters.status && { status: filters.status }),
-      ...(filters.priority && { priority: filters.priority }),
-      ...(filters.createdAt && { createdAt: filters.createdAt }),
-    },
+    where: whereConditions,
   });
 };
 
@@ -26,14 +39,6 @@ export const getTaskById = async (id: string) => {
 };
 
 export const createTask = async (taskData: TCreateTask) => {
-  const newTask: TTask = {
-    id: crypto.randomUUID(),
-    createdAt: new Date(),
-    status: Status.Todo,
-    priority: Priority.Low,
-    ...taskData,
-  };
-
   return Task.create(taskData);
 };
 

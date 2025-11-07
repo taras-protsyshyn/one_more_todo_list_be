@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import * as service from "../services/user.service.js";
 import * as schemas from "../schemas/user.schemas.js";
 import { AppError } from "../errors.js";
+import z from "zod";
 
 export const getUsers = async (
   req: Request,
@@ -17,20 +18,23 @@ export const getUsers = async (
   }
 };
 
-export const getUser = (req: Request, res: Response, nex: NextFunction) => {
+export const getUser = async (
+  req: Request,
+  res: Response,
+  nex: NextFunction
+) => {
   try {
-    const { id } = schemas.userSchema.parse(req.query);
+    const { id } = z.object({ id: z.coerce.number() }).parse(req.params);
 
-    const user = service.getUser(id);
-
+    const user = await service.getUser(id);
     if (!user) {
       throw new AppError("User not found", 404);
     }
 
     res.send(user);
   } catch (error) {
-    if (error instanceof AppError) {
-      nex(error);
+    if (error instanceof Error) {
+      nex(new AppError(error.message, 400));
     }
   }
 };
@@ -57,7 +61,7 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { id } = z.object({ id: z.coerce.number() }).parse(req.params);;
 
     const userData = schemas.updateUserSchema.parse(req.body);
     const newUser = await service.updateUser(id, userData);

@@ -1,47 +1,31 @@
+import { Task } from "../models/task.model.js";
 import { User } from "../models/user.model.js";
 
 import type { TCreateUser } from "../types/user.types.js";
 
 export const createUser = async (userData: TCreateUser) => {
-  const user = await User.create(userData);
-
-  return user;
+  return await User.create(userData);
 };
 
-export const getUser = async (id: string) => {
-  const user = await User.findByPk(id);
-  return user;
+export const getUser = async (id: number) => {
+  return await User.findAll({ where: { id }, include: [Task] });
 };
 
 export const getUsers = async () => {
-  const users = await User.findAll();
-
-  return users;
+  return await User.findAll();
 };
 
 export const updateUser = async (
-  id: string,
+  id: number,
   userData: Partial<TCreateUser>
 ) => {
-  const user = await getUser(id);
+  await User.update(userData, { where: { id } });
 
-  if (!user) {
-    return null;
-  }
-
-  await user.update(userData);
-
-  return user;
+  return getUser(id);
 };
 
 export const deleteUser = async (id: string) => {
-  const user = await getUser(id);
-
-  if (!user) {
-    return null;
-  }
-
-  await user.destroy();
+  await User.destroy({ where: { id } });
 
   return id;
 };

@@ -2,10 +2,12 @@ import {
   AllowNull,
   Column,
   DataType,
+  ForeignKey,
   Model,
   Table,
 } from "sequelize-typescript";
 import { Priority, Status } from "../types/task.types.js";
+import { User } from "./user.model.js";
 
 @Table({
   tableName: "tasks",
@@ -28,4 +30,7 @@ export class Task extends Model {
     defaultValue: Priority.Low,
   })
   priority!: Priority;
+  @ForeignKey(() => User)
+  @Column(DataType.INTEGER)
+  userId!: number;
 }
