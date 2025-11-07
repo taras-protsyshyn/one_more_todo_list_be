@@ -8,6 +8,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import taskRouter from "./routes/task.routes.js";
+import userRouter from "./routes/user.routes.js";
 import type { AppError } from "./errors.js";
 
 import "./config/db.js";
@@ -22,6 +23,7 @@ app.use(morgan("dev"));
 app.use(cors());
 
 app.use("/tasks", taskRouter);
+app.use("/users", userRouter);
 
 app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
   console.error(error.stack);
