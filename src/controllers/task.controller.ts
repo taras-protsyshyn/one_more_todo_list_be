@@ -4,17 +4,22 @@ import * as service from "../services/task.service.js";
 import * as schemas from "../schemas/task.schemas.js";
 import { AppError } from "../errors.js";
 
-export const getTasks = (req: Request, res: Response, nex: NextFunction) => {
+export const getTasks = async (
+  req: Request,
+  res: Response,
+  nex: NextFunction
+) => {
   try {
     const query = schemas.tasksFilterSchema.parse(req.query);
+    const tasks = await service.getTasks(query);
 
-    res.send(service.getTasks(query));
+    res.send(tasks);
   } catch (error) {
     nex(new AppError("Invalid query parameters", 400));
   }
 };
 
-export const getTaskById = (
+export const getTaskById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -22,7 +27,7 @@ export const getTaskById = (
   const { id } = req.params;
 
   try {
-    const task = service.getTaskById(id);
+    const task = await service.getTaskById(id);
 
     if (!task) {
       throw new AppError("Task not found", 404);
@@ -34,48 +39,55 @@ export const getTaskById = (
   }
 };
 
-export const createTask = (req: Request, res: Response, next: NextFunction) => {
+export const createTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const taskData = schemas.createTaskSchema.parse(req.body);
-    const newTask = service.createTask(taskData);
+    const newTask = await service.createTask(taskData);
     res.status(201).send(newTask);
   } catch (error) {
-    next(new AppError("Invalid task data", 400));
+    if (error instanceof Error) {
+      return next(new AppError(error.message, 400));
+    }
   }
 };
 
-export const updateTask = (req: Request, res: Response, next: NextFunction) => {
+export const updateTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
-    const task = service.getTaskById(id);
-
-    if (!task) {
-      throw new AppError("Task not found", 404);
-    }
-
-    const taskData = schemas.taskSchema.parse(req.body);
-    const newTask = service.updateTask(id, taskData);
+    const taskData = schemas.updateTaskSchema.parse(req.body);
+    const newTask = await service.updateTask(id, taskData);
 
     res.status(201).send(newTask);
   } catch (error) {
-    if (error instanceof AppError) {
-      return next(error);
+    if (error instanceof Error) {
+      next(new AppError(error.message, 400));
     }
-    next(new AppError("Invalid task data", 400));
   }
 };
 
-export const deleteTask = (req: Request, res: Response, next: NextFunction) => {
+export const deleteTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
-    const deletedId = service.deleteTask(id);
-    if (deletedId === -1) {
-      throw new AppError("Task not found", 404);
-    }
+    const deletedId = await service.deleteTask(id);
+
     res.send(deletedId);
   } catch (error) {
-    next(error);
+    if (error instanceof Error) {
+      next(new AppError(error.message, 400));
+    }
   }
 };

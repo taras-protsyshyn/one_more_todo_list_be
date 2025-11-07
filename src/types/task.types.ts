@@ -1,5 +1,9 @@
 import type z from "zod";
-import type { taskSchema, createTaskSchema } from "../schemas/task.schemas.js";
+import type {
+  taskSchema,
+  createTaskSchema,
+  updateTaskSchema,
+} from "../schemas/task.schemas.js";
 
 export enum Status {
   Todo = "todo",
@@ -13,7 +17,12 @@ export enum Priority {
   High = "high",
 }
 
-export type Filters = { status?: Status; priority?: Priority; createdAt?: Date };
+export type Filters = {
+  status?: Status;
+  priority?: Priority;
+  createdAt?: Date;
+};
 
 export type TTask = z.infer<typeof taskSchema>;
 export type TCreateTask = z.infer<typeof createTaskSchema>;
+export type TUpdateTask = Partial<typeof updateTaskSchema>;

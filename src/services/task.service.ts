@@ -1,35 +1,31 @@
-import z from "zod";
-
-import db from "../../db.json" with { type: "json" };
-import { taskSchema } from "../schemas/task.schemas.js";
-import { isObjectEmpty, isSameDate } from "../utils/index.js";
+import { isObjectEmpty } from "../utils/index.js";
 import {
   Priority,
   Status,
   type Filters,
   type TTask,
   type TCreateTask,
+  type TUpdateTask,
 } from "../types/task.types.js";
+import { Task } from "../models/task.model.js";
 
-const parsedTask = z.array(taskSchema).parse(db.tasks);
+export const getTasks = async (filters: Filters) => {
+  if (isObjectEmpty(filters)) return Task.findAll();
 
-export const getTasks = (filters: Filters) => {
-  if (isObjectEmpty(filters)) return parsedTask;
-
-  return parsedTask.filter((task) => {
-    if (filters.status && task.status !== filters.status) return false;
-    if (filters.priority && task.priority !== filters.priority) return false;
-    if (filters.createdAt && !isSameDate(task.createdAt, filters.createdAt))
-      return false;
-    return true;
+  return Task.findAll({
+    where: {
+      ...(filters.status && { status: filters.status }),
+      ...(filters.priority && { priority: filters.priority }),
+      ...(filters.createdAt && { createdAt: filters.createdAt }),
+    },
   });
 };
 
-export const getTaskById = (id: string) => {
-  return parsedTask.find((task) => task.id === id);
+export const getTaskById = async (id: string) => {
+  return Task.findOne({ where: { id } });
 };
 
-export const createTask = (taskData: TCreateTask) => {
+export const createTask = async (taskData: TCreateTask) => {
   const newTask: TTask = {
     id: crypto.randomUUID(),
     createdAt: new Date(),
@@ -38,26 +34,16 @@ export const createTask = (taskData: TCreateTask) => {
     ...taskData,
   };
 
-  parsedTask.push(newTask);
-
-  return newTask;
+  return Task.create(taskData);
 };
 
-export const updateTask = (id: string, taskData: TTask) => {
-  const taskIndex = parsedTask.findIndex((task) => task.id === id);
+export const updateTask = async (id: string, taskData: TUpdateTask) => {
+  await Task.update(taskData, { where: { id } });
 
-  const updatedTask = { ...parsedTask[taskIndex], ...taskData };
-
-  parsedTask[taskIndex] = updatedTask;
-
-  return updatedTask;
+  return getTaskById(id);
 };
 
-export const deleteTask = (id: string) => {
-  const taskIndex = parsedTask.findIndex((task) => task.id === id);
-  if (taskIndex === -1) return taskIndex;
-
-  parsedTask.splice(taskIndex, 1);
-
+export const deleteTask = async (id: string) => {
+  await Task.destroy({ where: { id } });
   return id;
 };

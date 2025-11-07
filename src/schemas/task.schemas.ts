@@ -18,6 +18,11 @@ export const createTaskSchema = taskSchema.omit({
   status: true,
 });
 
+export const updateTaskSchema = taskSchema.partial().omit({
+  id: true,
+  createdAt: true,
+});
+
 export const tasksFilterSchema = z.object({
   status: z.enum(Status).optional(),
   priority: z.enum(Priority).optional(),

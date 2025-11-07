@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import { User } from "../models/user.model.js";
+import { Task } from "../models/task.model.js";
 
 export const sequelize = new Sequelize({
   dialect: "postgres",
@@ -8,7 +9,7 @@ export const sequelize = new Sequelize({
   database: process.env.DB_NAME,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  models: [User],
+  models: [User, Task],
 });
 
 try {
