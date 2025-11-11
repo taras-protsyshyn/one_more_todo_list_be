@@ -10,27 +10,17 @@ import { Task } from "../models/task.model.js";
 export const getTasks = async (filters: Filters) => {
   if (isObjectEmpty(filters)) return Task.findAll();
 
-  const whereConditions: any = {};
-
-  if (filters.status) {
-    whereConditions.status = filters.status;
-  }
-
-  if (filters.priority) {
-    whereConditions.priority = filters.priority;
-  }
-
-  if (filters.createdAt) {
-    whereConditions.createdAt = {
-      [Op.between]: [
-        getStartOfDay(filters.createdAt),
-        getEndOfDay(filters.createdAt),
-      ],
-    };
-  }
-
   return Task.findAll({
-    where: whereConditions,
+    where: {
+      ...(filters.status && { status: filters.status }),
+      ...(filters.priority && { priority: filters.priority }),
+      ...(filters.createdAt && {
+        [Op.between]: [
+          getStartOfDay(filters.createdAt),
+          getEndOfDay(filters.createdAt),
+        ],
+      }),
+    },
   });
 };
 
