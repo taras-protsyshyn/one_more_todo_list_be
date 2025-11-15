@@ -6,20 +6,20 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
-import { Task } from "./task.model.js";
+import { Task } from "./task.model";
 
 @Table({
   tableName: "users",
 })
 export class User extends Model {
   @Column(DataType.STRING)
-  name!: string;
+  declare name: string;
   @AllowNull(false)
   @Column({
     type: DataType.STRING,
     unique: true,
   })
-  email!: string;
+  declare email: string;
   @HasMany(() => Task)
   tasks!: Task[];
 }

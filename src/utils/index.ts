@@ -1,3 +1,3 @@
-export { isObjectEmpty } from "./isObjectEmpty.js";
+export { isObjectEmpty } from "./isObjectEmpty";
 
-export * from "./date.js";
+export * from "./date";

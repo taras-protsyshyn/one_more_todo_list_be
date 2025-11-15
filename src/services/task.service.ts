@@ -1,11 +1,7 @@
 import { Op } from "sequelize";
-import { getEndOfDay, getStartOfDay, isObjectEmpty } from "../utils/index.js";
-import {
-  type Filters,
-  type TCreateTask,
-  type TUpdateTask,
-} from "../types/task.types.js";
-import { Task } from "../models/task.model.js";
+import { getEndOfDay, getStartOfDay, isObjectEmpty } from "../utils/index";
+import { Filters, TCreateTask, TUpdateTask } from "../types/task.types";
+import { Task } from "../models/task.model";
 
 export const getTasks = async (filters: Filters) => {
   if (isObjectEmpty(filters)) return Task.findAll();

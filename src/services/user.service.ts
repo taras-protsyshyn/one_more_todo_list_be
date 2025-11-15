@@ -1,5 +1,5 @@
-import { Task } from "../models/task.model.js";
-import { User } from "../models/user.model.js";
+import { Task } from "../models/task.model";
+import { User } from "../models/user.model";
 
 import type { TCreateUser } from "../types/user.types.js";
 
@@ -8,7 +8,9 @@ export const createUser = async (userData: TCreateUser) => {
 };
 
 export const getUser = async (id: number) => {
-  return await User.findAll({ where: { id }, include: [Task] });
+  const users = await User.findAll({ where: { id }, include: [Task] });
+
+  return !!users.length ? users[0] : null;
 };
 
 export const getUsers = async () => {
@@ -25,7 +27,7 @@ export const updateUser = async (
 };
 
 export const deleteUser = async (id: string) => {
-  await User.destroy({ where: { id } });
+  const res = await User.destroy({ where: { id } });
 
-  return id;
+  return res ? id : null;
 };

@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 
-import * as service from "../services/task.service.js";
-import * as schemas from "../schemas/task.schemas.js";
-import { AppError } from "../errors.js";
+import * as service from "../services/task.service";
+import * as schemas from "../schemas/task.schemas";
+import { AppError } from "../errors";
 
 export const getTasks = async (
   req: Request,

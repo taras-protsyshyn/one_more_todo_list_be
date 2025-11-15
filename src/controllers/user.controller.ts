@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 
-import * as service from "../services/user.service.js";
-import * as schemas from "../schemas/user.schemas.js";
-import { AppError } from "../errors.js";
+import * as service from "../services/user.service";
+import * as schemas from "../schemas/user.schemas";
+import { AppError } from "../errors";
 import z from "zod";
 
 export const getUsers = async (
@@ -27,12 +27,16 @@ export const getUser = async (
     const { id } = z.object({ id: z.coerce.number() }).parse(req.params);
 
     const user = await service.getUser(id);
+
     if (!user) {
       throw new AppError("User not found", 404);
     }
 
     res.send(user);
   } catch (error) {
+    if (error instanceof AppError) {
+      return nex(error);
+    }
     if (error instanceof Error) {
       nex(new AppError(error.message, 400));
     }
@@ -61,7 +65,7 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = z.object({ id: z.coerce.number() }).parse(req.params);;
+    const { id } = z.object({ id: z.coerce.number() }).parse(req.params);
 
     const userData = schemas.updateUserSchema.parse(req.body);
     const newUser = await service.updateUser(id, userData);
@@ -97,6 +101,11 @@ export const deleteUser = async (
 
     res.status(204).send(deletedID);
   } catch (error) {
-    next(error);
+    if (error instanceof AppError) {
+      return next(error);
+    }
+    if (error instanceof Error) {
+      return next(new AppError(error.message, 400));
+    }
   }
 };

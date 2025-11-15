@@ -1,35 +1,18 @@
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
-import morgan from "morgan";
-import cors from "cors";
 import dotenv from "dotenv";
+import app from "./app";
 
-import taskRouter from "./routes/task.routes.js";
-import userRouter from "./routes/user.routes.js";
-import type { AppError } from "./errors.js";
-
-import "./config/db.js";
+import db from "./config/db";
 
 dotenv.config();
 
-const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(morgan("dev"));
-app.use(cors());
+async function main() {
+  await db.sync({ alter: true });
+  console.log("DB synced");
+}
 
-app.use("/tasks", taskRouter);
-app.use("/users", userRouter);
-
-app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
-  console.error(error.stack);
-  res.status(error.statusCode).send({ message: error.message });
-});
-
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await main();
   console.log(`Server is running on http://localhost:${PORT}`);
 });

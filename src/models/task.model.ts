@@ -6,8 +6,8 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
-import { Priority, Status } from "../types/task.types.js";
-import { User } from "./user.model.js";
+import { Priority, Status } from "../types/task.types";
+import { User } from "./user.model";
 
 @Table({
   tableName: "tasks",

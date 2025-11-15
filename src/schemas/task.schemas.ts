@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { Status, Priority } from "../types/task.types.js";
-import { parseDate } from "../utils/date.js";
+import { Status, Priority } from "../types/task.types";
+import { parseDate } from "../utils/date";
 
 export const taskSchema = z.object({
   id: z.string(),
