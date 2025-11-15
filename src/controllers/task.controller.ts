@@ -22,14 +22,33 @@ export const getTasks = async (
   }
 };
 
+export const getTasksByUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.params;
+    const query = schemas.tasksFilterSchema.parse(req.query);
+
+    const tasks = await service.getTasksByUserId(userId, query);
+
+    res.send(tasks);
+  } catch (error) {
+    if (error instanceof Error) {
+      next(new AppError(error.message, 400));
+    }
+  }
+};
+
 export const getTaskById = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
-
   try {
+    const id = req.params.id;
+
     const task = await service.getTaskById(id);
 
     if (!task) {
@@ -38,10 +57,12 @@ export const getTaskById = async (
 
     res.send(task);
   } catch (error) {
+    if (error instanceof AppError) {
+      return next(error);
+    }
     if (error instanceof Error) {
       return next(new AppError(error.message, 400));
     }
-    next(error);
   }
 };
 
@@ -53,6 +74,7 @@ export const createTask = async (
   try {
     const taskData = schemas.createTaskSchema.parse(req.body);
     const newTask = await service.createTask(taskData);
+
     res.status(201).send(newTask);
   } catch (error) {
     if (error instanceof Error) {
@@ -89,9 +111,15 @@ export const deleteTask = async (
 
   try {
     const deletedId = await service.deleteTask(id);
+    if (!deletedId) {
+      throw new AppError("Task not found", 404);
+    }
 
-    res.send(deletedId);
+    res.status(204).send(deletedId);
   } catch (error) {
+    if (error instanceof AppError) {
+      return next(error);
+    }
     if (error instanceof Error) {
       next(new AppError(error.message, 400));
     }

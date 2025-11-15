@@ -2,21 +2,32 @@ import { Op } from "sequelize";
 import { getEndOfDay, getStartOfDay, isObjectEmpty } from "../utils/index";
 import { Filters, TCreateTask, TUpdateTask } from "../types/task.types";
 import { Task } from "../models/task.model";
+import { parse } from "path";
+
+const parseFilters = (filters: Filters) => {
+  return {
+    ...(filters.status && { status: filters.status }),
+    ...(filters.priority && { priority: filters.priority }),
+    ...(filters.createdAt && {
+      [Op.between]: [
+        getStartOfDay(filters.createdAt),
+        getEndOfDay(filters.createdAt),
+      ],
+    }),
+  };
+};
 
 export const getTasks = async (filters: Filters) => {
   if (isObjectEmpty(filters)) return Task.findAll();
 
   return Task.findAll({
-    where: {
-      ...(filters.status && { status: filters.status }),
-      ...(filters.priority && { priority: filters.priority }),
-      ...(filters.createdAt && {
-        [Op.between]: [
-          getStartOfDay(filters.createdAt),
-          getEndOfDay(filters.createdAt),
-        ],
-      }),
-    },
+    where: parseFilters(filters),
+  });
+};
+
+export const getTasksByUserId = async (userId: string, filters: Filters) => {
+  return Task.findAll({
+    where: { userId, ...parseFilters(filters) },
   });
 };
 
@@ -35,6 +46,7 @@ export const updateTask = async (id: string, taskData: TUpdateTask) => {
 };
 
 export const deleteTask = async (id: string) => {
-  await Task.destroy({ where: { id } });
-  return id;
+  const num = await Task.destroy({ where: { id } });
+
+  return !!num ? id : null;
 };

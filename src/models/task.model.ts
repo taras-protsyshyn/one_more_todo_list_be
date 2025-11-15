@@ -15,7 +15,7 @@ import { User } from "./user.model";
 export class Task extends Model {
   @AllowNull(false)
   @Column(DataType.STRING)
-  title!: string;
+  declare title: string;
   @Column(DataType.STRING)
   description!: string;
   @Column(DataType.DATE)
