@@ -16,7 +16,6 @@ export const getTasks = async (
     res.send(tasks);
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error);
       nex(new AppError(error.message, 400));
     }
   }

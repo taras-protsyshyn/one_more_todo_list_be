@@ -21,5 +21,8 @@
     "emitDecoratorMetadata": true,
     "moduleResolution": "bundler",
     "esModuleInterop": true
-  }
+  },
+  "exclude": [
+    "eslint.config.ts"
+  ]
 }

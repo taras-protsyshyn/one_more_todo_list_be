@@ -2,7 +2,6 @@ import { Op } from "sequelize";
 import { getEndOfDay, getStartOfDay, isObjectEmpty } from "../utils/index";
 import { Filters, TCreateTask, TUpdateTask } from "../types/task.types";
 import { Task } from "../models/task.model";
-import { parse } from "path";
 
 const parseFilters = (filters: Filters) => {
   return {
@@ -48,5 +47,5 @@ export const updateTask = async (id: string, taskData: TUpdateTask) => {
 export const deleteTask = async (id: string) => {
   const num = await Task.destroy({ where: { id } });
 
-  return !!num ? id : null;
+  return num ? id : null;
 };

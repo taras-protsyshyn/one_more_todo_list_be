@@ -140,7 +140,7 @@ describe("Task API", () => {
       .expect(200);
 
     expect(response.body.length).toBe(2);
-    response.body.forEach((task: any) => {
+    response.body.forEach((task: Task) => {
       expect(task.userId).toBe(user.id);
     });
   });
