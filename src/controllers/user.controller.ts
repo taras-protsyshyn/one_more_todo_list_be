@@ -14,6 +14,9 @@ export const getUsers = async (
     const users = await service.getUsers();
     res.send(users);
   } catch (error) {
+    if (error instanceof Error) {
+      return nex(new AppError(error.message, 500));
+    }
     nex(new AppError("Could not retrieve users", 500));
   }
 };

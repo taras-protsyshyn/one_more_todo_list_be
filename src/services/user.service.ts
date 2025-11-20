@@ -10,7 +10,7 @@ export const createUser = async (userData: TCreateUser) => {
 export const getUser = async (id: number) => {
   const users = await User.findAll({ where: { id }, include: [Task] });
 
-  return !!users.length ? users[0] : null;
+  return users.length ? users[0] : null;
 };
 
 export const getUsers = async () => {

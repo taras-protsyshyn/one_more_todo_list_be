@@ -19,8 +19,8 @@ app.use(cors());
 app.use("/tasks", taskRouter);
 app.use("/users", userRouter);
 
-app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
-  console.error(error.stack);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((error: AppError, req: Request, res: Response, _next: NextFunction) => {
   res.status(error.statusCode).send({ message: error.message });
 });
 

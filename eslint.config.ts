@@ -3,6 +3,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 import prettier from "eslint-plugin-prettier";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
@@ -14,11 +15,10 @@ export default defineConfig([
   tseslint.configs.recommended,
   {
     plugins: { prettier },
-    extends: ["plugin:prettier/recommended", "prettier"],
     rules: {
       "no-console": "warn",
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-      "prettier/prettier": "error",
     },
   },
+  eslintConfigPrettier,
 ]);
