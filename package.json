@@ -8,6 +8,7 @@
     "format": "prettier --write .",
     "test": "NODE_ENV=test jest --runInBand",
     "lint": "eslint .",
+    "build": "tsc",
     "prepare": "husky"
   },
   "keywords": [],

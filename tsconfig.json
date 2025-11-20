@@ -4,13 +4,10 @@
     "outDir": "./dist",
     "module": "es2015",
     "target": "esnext",
-    "types": [
-      "node",
-      "jest"
-    ],
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    "types": ["node", "jest"],
+    "sourceMap": false,
+    "declaration": false,
+    "declarationMap": false,
     "strict": true,
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
@@ -23,6 +20,9 @@
     "esModuleInterop": true
   },
   "exclude": [
-    "eslint.config.ts"
+    "eslint.config.ts",
+    "src/tests/**/*",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ]
 }
