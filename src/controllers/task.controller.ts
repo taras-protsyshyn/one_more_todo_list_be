@@ -114,7 +114,7 @@ export const deleteTask = async (
       throw new AppError("Task not found", 404);
     }
 
-    res.status(204).send(deletedId);
+    res.status(200).send({ id: deletedId });
   } catch (error) {
     if (error instanceof AppError) {
       return next(error);

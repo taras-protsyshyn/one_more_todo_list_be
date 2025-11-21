@@ -11,7 +11,7 @@ export const taskSchema = z.object({
   deadline: z.coerce.date(),
   status: z.enum(Status).default(Status.Todo).optional(),
   priority: z.enum(Priority).default(Priority.Low).optional(),
-  userId: z.number(),
+  userId: z.number().optional(), // TODO: temporarily optional
 });
 
 export const createTaskSchema = taskSchema.omit({
