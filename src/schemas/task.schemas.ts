@@ -28,7 +28,7 @@ export const updateTaskSchema = taskSchema.partial().omit({
 export const tasksFilterSchema = z.object({
   status: z.enum(Status).optional(),
   priority: z.enum(Priority).optional(),
-  createdAt: z
+  deadline: z
     .string()
     .transform((str) => parseDate(str))
     .optional(),

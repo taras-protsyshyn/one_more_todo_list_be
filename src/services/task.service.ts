@@ -7,11 +7,13 @@ const parseFilters = (filters: Filters) => {
   return {
     ...(filters.status && { status: filters.status }),
     ...(filters.priority && { priority: filters.priority }),
-    ...(filters.createdAt && {
-      [Op.between]: [
-        getStartOfDay(filters.createdAt),
-        getEndOfDay(filters.createdAt),
-      ],
+    ...(filters.deadline && {
+      deadline: {
+        [Op.between]: [
+          getStartOfDay(filters.deadline),
+          getEndOfDay(filters.deadline),
+        ],
+      },
     }),
   };
 };
